@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 
 public class Main
@@ -42,13 +43,13 @@ public class Main
 
             //EVERYTHING HAPPENED HERE//
 
-            File output3 = ImageUtils.bufferedToImage("bicubicInterpolation", destBicubic);
-            ImageUtils.bufferedToHexMatrix("hexmatrix", destBicubic);
+            File output = ImageUtils.bufferedToImage("bicubicInterpolation", destBicubic);
+            PrintWriter outputHex = ImageUtils.bufferedToHexMatrix("hexmatrix", destBicubic);
 
-            if (output3 == null) {
-                System.err.println("Failed to write image to file");
+            if (output == null || outputHex == null) {
+                System.err.println("Failed to write image or hex to file");
             } else {
-                System.out.println("Image successfully converted and saved to: " + output3.getAbsolutePath());
+                System.out.println("Image and hex successfully converted and saved to: " + output.getAbsolutePath());
             }
 
         } catch (Exception e) {

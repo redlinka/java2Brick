@@ -22,8 +22,8 @@ public class FactoryClient {
     private String get(String endpoint) throws IOException {
         var url = new URL(BASE_URL + endpoint);
         var connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
 
+        connection.setRequestMethod("GET");
         connection.addRequestProperty("X-Email", email);
         connection.addRequestProperty("X-Secret-Key", apiKey);
 

@@ -22,17 +22,20 @@ public class ImageUtils {
         }
     }
 
-    public static void bufferedToHexMatrix(String name, BufferedImage img) throws IOException {
+    public static PrintWriter bufferedToHexMatrix(String name, BufferedImage img) throws IOException {
+
         if (name == null || name.isEmpty() || name == "null") {
             throw new IllegalArgumentException("name cannot be empty or null");
         }
-        try (PrintWriter writer = new PrintWriter(name + ".txt", "UTF-8")) {
+        try (PrintWriter writer = new PrintWriter(name + ".txt")) {
+
             int width = img.getWidth();
             int height = img.getHeight();
-
             writer.printf(width + " " + height + "\n");
+
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
+
                     int rgb = img.getRGB(x, y) & 0xFFFFFF; // keep only RGB
                     writer.printf("%06X", rgb);
 
@@ -42,6 +45,10 @@ public class ImageUtils {
                 }
                 writer.println();
             }
+            return writer;
+
+        } catch (IOException e) {
+            throw new IOException("Failed to write image Hex to file");
         }
     }
 
