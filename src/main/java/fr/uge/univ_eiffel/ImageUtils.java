@@ -20,20 +20,25 @@ public class ImageUtils {
         } else {
             return img;
         }
-
     }
 
     public static void bufferedToHexMatrix(String name, BufferedImage img) throws IOException {
+        if (name == null || name.isEmpty() || name == "null") {
+            throw new IllegalArgumentException("name cannot be empty or null");
+        }
         try (PrintWriter writer = new PrintWriter(name + ".txt", "UTF-8")) {
             int width = img.getWidth();
             int height = img.getHeight();
 
+            writer.printf(width + " " + height + "\n");
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     int rgb = img.getRGB(x, y) & 0xFFFFFF; // keep only RGB
                     writer.printf("%06X", rgb);
 
-                    if (x < width - 1) writer.print(" ");
+                    if (x < width - 1) {
+                        writer.print(" ");
+                    }
                 }
                 writer.println();
             }

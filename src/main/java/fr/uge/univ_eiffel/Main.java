@@ -42,19 +42,25 @@ public class Main
 
             //EVERYTHING HAPPENED HERE//
 
-            File output = ImageUtils.bufferedToImage("nearestNeighbour", destNeigh);
-            File output2 = ImageUtils.bufferedToImage("bilinearInterpolation", destBili);
             File output3 = ImageUtils.bufferedToImage("bicubicInterpolation", destBicubic);
             ImageUtils.bufferedToHexMatrix("hexmatrix", destBicubic);
 
-            if (output == null || output2 == null || output3 == null) {
+            if (output3 == null) {
                 System.err.println("Failed to write image to file");
             } else {
-                System.out.println("Image successfully converted and saved to: " + output.getAbsolutePath());
+                System.out.println("Image successfully converted and saved to: " + output3.getAbsolutePath());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // load logins from config.properties
+        FactoryClient client = FactoryClient.fromProperties("config.properties");
+
+        // test the connection
+        System.out.println("Ping:" + client.ping());
+
+        // get catalog
+        System.out.println("Catalog:" + client.catalog());
     }
 }
