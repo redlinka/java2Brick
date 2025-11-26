@@ -10,8 +10,8 @@ public class Main
 {
     public static void main(String[] args) throws IOException {
 
-        double scaleFactorX = 0.73;
-        double scaleFactorY = 0.74;
+        double scaleFactorX = 0.20;
+        double scaleFactorY = 0.20;
 
         try {
 
@@ -45,6 +45,7 @@ public class Main
             File output = ImageUtils.bufferedToImage("nearestNeighbour", destNeigh);
             File output2 = ImageUtils.bufferedToImage("bilinearInterpolation", destBili);
             File output3 = ImageUtils.bufferedToImage("bicubicInterpolation", destBicubic);
+            ImageUtils.bufferedToHexMatrix("hexmatrix", destBicubic);
 
             if (output == null || output2 == null || output3 == null) {
                 System.err.println("Failed to write image to file");
