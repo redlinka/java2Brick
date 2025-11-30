@@ -1,45 +1,39 @@
 package fr.uge.univ_eiffel;
 
+import fr.uge.univ_eiffel.downscalers.BicubicInterpolator;
+import fr.uge.univ_eiffel.downscalers.BilinearInterpolator;
+import fr.uge.univ_eiffel.downscalers.NearestNeighbour;
+
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 
 public class Main
 {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 
-        double scaleFactorX = 0.20;
-        double scaleFactorY = 0.20;
+        int pixelW = 500;
+        int pixelH = 500;
+        NearestNeighbour nearest = new NearestNeighbour();
+        BilinearInterpolator bilinear = new BilinearInterpolator();
+        BicubicInterpolator bicubic = new BicubicInterpolator();
 
         try {
 
-            File input = new File("src/main/java/fr/uge/univ_eiffel/chest.png");
+            File input = new File("test_imgs/original-image.jpg");
 
             BufferedImage source = ImageUtils.imageToBuffered(input);
-            BufferedImage destNeigh = new BufferedImage(
-                    (int)(source.getWidth() * scaleFactorX),
-                    (int)(source.getHeight() * scaleFactorY),
-                    BufferedImage.TYPE_INT_ARGB
-            );
-            BufferedImage destBili = new BufferedImage(
-                    (int)(source.getWidth() * scaleFactorX),
-                    (int)(source.getHeight() * scaleFactorY),
-                    BufferedImage.TYPE_INT_ARGB
-            );
-            BufferedImage destBicubic = new BufferedImage(
-                    (int)(source.getWidth() * scaleFactorX),
-                    (int)(source.getHeight() * scaleFactorY),
-                    BufferedImage.TYPE_INT_ARGB
-            );
+
+            BufferedImage destNeigh = new BufferedImage(pixelW, pixelH, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage destBili = new BufferedImage(pixelW, pixelH, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage destBicubic = new BufferedImage(pixelW, pixelH, BufferedImage.TYPE_INT_ARGB);
 
             //EVERYTHING HAPPENS HERE//
 
-            Downscaler.nearestNeighbour(source,destNeigh);
-            Downscaler.biLinearInterpolation(source,destBili);
-            Downscaler.biCubicInterpolation(source,destBicubic);
+            nearest.downscale(source,destNeigh);
+            bilinear.downscale(source,destBili);
+            bicubic.downscale(source,destBicubic);
 
             //EVERYTHING HAPPENED HERE//
 
@@ -56,12 +50,18 @@ public class Main
             e.printStackTrace();
         }
         // load logins from config.properties
-        FactoryClient client = FactoryClient.fromProperties("config.properties");
+        FactoryClient client = FactoryClient.makeFromProps("config.properties");
 
         // test the connection
         System.out.println("Ping:" + client.ping());
 
         // get catalog
-        System.out.println("Catalog:" + client.catalog());
+        client.catalog();
+
+        // test inventoryManager
+        InventoryManager inventoryManager = InventoryManager.makeFromProps("config.properties");
+        //inventoryManager.updateCatalog(client);
+        inventoryManager.exportCatalog("catalog");
+        inventoryManager.close();
     }
 }
