@@ -1,10 +1,16 @@
-package fr.uge.univ_eiffel.downscalers;
+package fr.uge.univ_eiffel.image_processing.downscalers;
 
 import java.awt.image.BufferedImage;
 
+/** Implementation of bilinear interpolation for image resizing.
+ * Considers the 4 nearest neighbors to calculate pixel color, offering a balance between speed and quality.
+ * Fields: None. */
 public class BilinearInterpolator implements Downscaler {
 
     // uses the interpolation formula to calculate the values of the destination pixel
+    /** Calculates the weighted average of 4 pixels based on distance.
+     * Input: 4 color values (corners) and the offsets (dx, dy).
+     * Output: The interpolated integer value clamped to 0-255. */
     private int biLinearInterpolate(int c00, int c10, int c01, int c11, double dx, double dy) {
         double interpolated =
                 (1 - dx) * (1 - dy) * c00
@@ -16,10 +22,10 @@ public class BilinearInterpolator implements Downscaler {
     }
 
     /**
-     * bilinear interplation gives a smoother result on average,
+     * bilinear interpolation gives a smoother result on average,
      * it takes into account the 4 neighboring pixels to the destination one and averages with coefficients their color values.
-     */
-
+     * Input: Source image and blank destination image.
+     * Output: void (modifies destination in place). */
     public void downscale(BufferedImage source, BufferedImage destination) {
         double widthRatio = (double) destination.getWidth() / source.getWidth();
         double heightRatio = (double) destination.getHeight() / source.getHeight();
@@ -29,10 +35,15 @@ public class BilinearInterpolator implements Downscaler {
 
                 double srcX = x / widthRatio;
                 double srcY = y / heightRatio;
+
+                // coordinates of the top-left neighbor
                 int x0 = clamp((int) Math.floor(srcX), source.getWidth() - 1); // top-left
                 int y0 = clamp((int) Math.floor(srcY), source.getHeight() - 1); // top-right
+
+                // coordinates of the bottom-right neighbor
                 int x1 = clamp(x0 + 1, source.getWidth() - 1); // bottom-left
                 int y1 = clamp( y0 + 1, source.getHeight() - 1); // bottom-right
+
                 double dx = srcX - x0; // value btw 0 and 1 indicating the coords of the dest pixel in comparison to its neighbors
                 double dy = srcY - y0; // value btw 0 and 1 indicating the coords of the dest pixel in comparison to its neighbors
 

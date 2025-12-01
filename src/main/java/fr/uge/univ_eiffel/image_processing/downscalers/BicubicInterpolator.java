@@ -1,10 +1,15 @@
-package fr.uge.univ_eiffel.downscalers;
+package fr.uge.univ_eiffel.image_processing.downscalers;
 
 import java.awt.image.BufferedImage;
 
+/** Implementation of bicubic interpolation for image resizing.
+ * Provides higher quality results than linear methods but is computationally heavier.
+ * Fields: None. */
 public class BicubicInterpolator implements Downscaler {
 
-    // uses the bicubic interpolation formula to determine the best ARGB value of a given destination pixel during rescaling
+    /** uses the bicubic interpolation formula to determine the best ARGB value of a given destination pixel during rescaling
+     * Input: 4 color values and the distance 'd'.
+     * Output: The interpolated color component value. */
     private double biCubicInterpolate(int c0,int c1, int c2, int c3, double d) {
         double slope1 = (c2 - c0)/2;
         double slope2 = (c3 - c1)/2;
@@ -16,6 +21,10 @@ public class BicubicInterpolator implements Downscaler {
 
     // implementation of bicubic interpolation rescaling, the difference with linear interpolation is really noceable at smaller or bigger scales
     // it tends to become very slow at bigger scales
+    /** Resizes the image using a 4x4 pixel neighborhood.
+     * Iterates through every destination pixel and computes color based on 16 surrounding source pixels.
+     * Input: Source image and blank destination image.
+     * Output: void (modifies destination). */
     public void downscale(BufferedImage source, BufferedImage destination) {
         double widthRatio = (double) destination.getWidth() / source.getWidth();
         double heightRatio = (double) destination.getHeight() / source.getHeight();
